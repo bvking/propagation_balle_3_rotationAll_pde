@@ -50,11 +50,11 @@ modeStartKeyToFollow = " followSignalSampledOppositeWay(frameRatio) ";
  
   splitTimeScale(30.0); //  10.0= vitesse de propagation. On change de sens de ROTATION avec q et z.
  // splitTimeLfoScale();  // change de sens de PROPAGATION
-  propagation2way(); 
+  
   
    if (formerFormerKey == '#' || modeStartKeyToFollow == " followSignalSampledOppositeWay(frameRatio) ") {
     
-println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
+    println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
 
       for (int i = 0; i < networkSize-0; i+=1) { 
         
@@ -96,7 +96,16 @@ println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
     phaseMappedFollow[i]= phaseMappedFollow[i]%TWO_PI;  
     }
    }
+
   }
+
+   //******** Lock last oscillator to the lastPhase
+  
+ lockOscillatorToPositionFromPreviousProagedBall();
+
+ 
+
+   propagation2way(); 
  
  formerFormerKey= formerKey;   
  formerKey=key;

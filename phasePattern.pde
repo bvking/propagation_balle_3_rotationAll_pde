@@ -219,7 +219,7 @@ void phasePattern() { // need standard mode to be trigged
       print ("impairmodulo "); 
       println (impairmodulo);
       if (impairmodulo==1) {
-        net.naturalFrequency[i]= OldFrequency[i]/2;
+   //**     net.naturalFrequency[i]= OldFrequency[i]/2;
         
       }
     }
@@ -636,7 +636,7 @@ void phasePattern() { // need standard mode to be trigged
   if (key == 'z') {  
     println ("//z$  Shift frequencies one by one") ;
     float speeed    = map ((float (mouseY)/width*1.0), 0, 1, -2, 2);
-    net.naturalFrequency[networkSize-1]= OldFrequency[networkSize-1]/1; 
+  //***  net.naturalFrequency[networkSize-1]= OldFrequency[networkSize-1]/1; 
 
     for (int i = 2; i < (networkSize-0); i++) { 
       //    for (int i = networkSize-2; i > -1; i--) { 
@@ -646,7 +646,7 @@ void phasePattern() { // need standard mode to be trigged
         //    if (i%1==0){
         //    net.naturalFrequency[i]=  net.naturalFrequency[networkSize-1]/(i+1);
         //  net.naturalFrequency[networkSize-0-i]= net.naturalFrequency[networkSize-1]/((((i/2)*1)));
-        net.naturalFrequency[networkSize-i]= net.naturalFrequency[networkSize-1]/((i+1)/2.0);
+    //***    net.naturalFrequency[networkSize-i]= net.naturalFrequency[networkSize-1]/((i+1)/2.0);
         print (i);
         
       }

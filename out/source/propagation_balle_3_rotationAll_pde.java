@@ -188,6 +188,99 @@ public void settings() {
 //  float lastBallPosition =  map (position.x, 0, 300, 0, TWO_PI); //  assigne à les positions x (celles qui viennent du sample non integré ici ) à la variable lastBallPosition. La balle la plus en avant de la machine
 //  ballManager.updateAndDraw(lastBallPosition); // CLASSE ballManager utilisé plus tard avec le sample des coordoonées x
 }
+   public void lockOscillatorToPositionFromPreviousProagedBall() { 
+
+  if (formerFormerKey  != '#' ) { //  works always ?
+   oscillatorChanged=true;
+    
+  int i;
+  i= oscillatorChange;
+
+  
+  int j;  
+  j= (oscillatorChange-1);
+  if (j<= -1){
+  j= networkSize-1;
+  }
+  
+  int k;  
+  k= (j-1);
+  if (k<= -1){
+  k= networkSize-1;
+  }
+  
+  int l;  
+  l= (k-1);
+  if (l<= -1){
+  l= networkSize-1;
+  }
+  
+  int m;  
+  m= (l-1);
+  if (m<= -1){
+  m= networkSize-1;
+  }
+      
+  if (oscillatorChanged==true )  { 
+    
+    if (  LFO[j]<0){   
+   //  LFO[i] = LFO[i] - phaseKeptAtChange[j];
+    phaseKeptAtChange[i]=LFO[j];  // the position of the actual changing ball is at the position of the prevous propaged ball
+    dataMappedForMotor[j]= PApplet.parseInt (map ( phaseKeptAtChange[i], 0, -TWO_PI, numberOfStep, 0)); 
+
+       netPhaseBase[j]= map (dataMappedForMotor[j], numberOfStep, 0, 0, -TWO_PI);
+   
+  }
+       
+   else
+ 
+  // LFO[i] = LFO[i]+ phaseKeptAtChange[j];
+       phaseKeptAtChange[i]=LFO[j];
+
+     //  LFO[j] = LFO[j]%TWO_PI;
+       dataMappedForMotor[j]= (int) map (phaseKeptAtChange[i], 0, TWO_PI, 0, numberOfStep);
+
+       netPhaseBase[j]= map (dataMappedForMotor[j], 0, numberOfStep, 0, TWO_PI);
+   
+     
+   
+
+ 
+   }
+    
+    phaseMappedFollow[j]=netPhaseBase[j];    //  RECORD on oscillatorChange-1 the postion of oscillatorChange where it has just changed
+
+  
+   //  phaseMappedFollow[oscillatorChange]= phaseKeptAtChange[oscillatorChange]; 
+
+         for (int p = 0; i < networkSize-0; i+=1) { 
+   // phaseMappedFollow[i]= net.phase[i];// add offset given by pendularPattern   
+  //  phaseMappedFollow[i] = netPhaseBase[i];
+    phaseMappedFollow[p]= phaseMappedFollow[p]%TWO_PI;  
+    }
+
+       LFO[l] = LFO[l]%TWO_PI;
+       dataMappedForMotor[l]= (int) map (LFO[l], 0, TWO_PI, 0, numberOfStep);
+            
+       netPhaseBase[l]= map (dataMappedForMotor[l], 0, numberOfStep, 0, TWO_PI);
+ 
+
+
+       LFO[k] = LFO[k]%TWO_PI;
+       dataMappedForMotor[k]= (int) map (LFO[k], 0, TWO_PI, 0, numberOfStep);
+ 
+      
+       netPhaseBase[k]= map (dataMappedForMotor[k], 0, numberOfStep, 0, TWO_PI);
+
+
+       LFO[j] = LFO[j]%TWO_PI;
+       dataMappedForMotor[j]= (int) map (LFO[j], 0, TWO_PI, 0, numberOfStep);
+  //     println (" phaseKeptAtChange[oscillatorChange] ", oscillatorChange, " " ,  phaseKeptAtChange[oscillatorChange]);
+       netPhaseBase[j]= map (dataMappedForMotor[j], 0, numberOfStep, 0, TWO_PI);
+
+     oscillatorChanged=false;
+     }
+}  
 int propagationLevel;
 int oscillatorBlocked;
 
@@ -409,7 +502,7 @@ char formerSartKey,formerKeyMetro;
       print ("impairmodulo "); 
       println (impairmodulo);
       if (impairmodulo==1) {
-        net.naturalFrequency[i]= OldFrequency[i]/2;
+   //**     net.naturalFrequency[i]= OldFrequency[i]/2;
         
       }
     }
@@ -826,7 +919,7 @@ char formerSartKey,formerKeyMetro;
   if (key == 'z') {  
     println ("//z$  Shift frequencies one by one") ;
     float speeed    = map ((PApplet.parseFloat (mouseY)/width*1.0f), 0, 1, -2, 2);
-    net.naturalFrequency[networkSize-1]= OldFrequency[networkSize-1]/1; 
+  //***  net.naturalFrequency[networkSize-1]= OldFrequency[networkSize-1]/1; 
 
     for (int i = 2; i < (networkSize-0); i++) { 
       //    for (int i = networkSize-2; i > -1; i--) { 
@@ -836,7 +929,7 @@ char formerSartKey,formerKeyMetro;
         //    if (i%1==0){
         //    net.naturalFrequency[i]=  net.naturalFrequency[networkSize-1]/(i+1);
         //  net.naturalFrequency[networkSize-0-i]= net.naturalFrequency[networkSize-1]/((((i/2)*1)));
-        net.naturalFrequency[networkSize-i]= net.naturalFrequency[networkSize-1]/((i+1)/2.0f);
+    //***    net.naturalFrequency[networkSize-i]= net.naturalFrequency[networkSize-1]/((i+1)/2.0);
         print (i);
         
       }
@@ -2378,11 +2471,11 @@ modeStartKeyToFollow = " followSignalSampledOppositeWay(frameRatio) ";
  
   splitTimeScale(30.0f); //  10.0= vitesse de propagation. On change de sens de ROTATION avec q et z.
  // splitTimeLfoScale();  // change de sens de PROPAGATION
-  propagation2way(); 
+  
   
    if (formerFormerKey == '#' || modeStartKeyToFollow == " followSignalSampledOppositeWay(frameRatio) ") {
     
-println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
+    println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
 
       for (int i = 0; i < networkSize-0; i+=1) { 
         
@@ -2424,7 +2517,16 @@ println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
     phaseMappedFollow[i]= phaseMappedFollow[i]%TWO_PI;  
     }
    }
+
   }
+
+   //******** Lock last oscillator to the lastPhase
+  
+ lockOscillatorToPositionFromPreviousProagedBall();
+
+ 
+
+   propagation2way(); 
  
  formerFormerKey= formerKey;   
  formerKey=key;
