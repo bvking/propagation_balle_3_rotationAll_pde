@@ -78,7 +78,9 @@ println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
     phaseMapped[i]= map (DataToDueCircularVirtualPosition[i], 0, numberOfStep, 0, TWO_PI);
     }
 
-     newPosXaddSignal[i]=newPosFollowed[i];
+  //   newPosXaddSignal[i]=newPosFollowed[i];
+
+   newPosXaddSignal[i]=phaseMapped[i];
 
   }
   

@@ -1,29 +1,6 @@
-int propagationLevel;
-int oscillatorBlocked;
-
-boolean circularMov;
-
-int ActualVirtualPosition[] = new int [networkSize];
-int ActualVirtualPositionFromOtherMode[] = new int [networkSize];
-
-int VirtualPosition[] = new int [networkSize];
-
-float  OldFrequency[]= new float [networkSize];
-
-float averagePhase;
-
-float netPhaseBase [] = new float [networkSize];
-float netOldPhaseBase [] = new float [networkSize];
-
-int oldMemoryi, memoryi;
-
-int k,d;
-char formerSartKey,formerKeyMetro;
-
-void phasePattern() { // need standard mode to be trigged
+void phasePatternOriginal() { // need standard mode to be trigged
   //************************************ DONT TOUCH
     for (int i = 0; i < (networkSize); i++) { 
-      netOldPhaseBase[i]=netPhaseBase[i];
    if  (   key == 'J')  {
  // ActualVirtualPosition[i]=ActualVirtualPosition[i]+1600;
   }
@@ -288,9 +265,9 @@ void phasePattern() { // need standard mode to be trigged
     float delaPhase    = map ((float (mouseY)/width*1), 0, 1, 0, QUARTER_PI );                
     for (int i = 0; i < (networkSize-0); i++) {          
       {
-        netPhaseBase[i]= averagePhase;  
-        //    netPhaseBase[i]= netPhaseBase[i]%PI/2; 
-        netPhaseBase[i]= netPhaseBase[i]%TWO_PI;
+        net.phase[i]= averagePhase;  
+        //    net.phase[i]= net.phase[i]%PI/2; 
+        net.phase[i]= net.phase[i]%TWO_PI;
       } 
       
     }
@@ -315,17 +292,17 @@ void phasePattern() { // need standard mode to be trigged
 
         for (int i = 1; i < (networkSize-0); i++) {  
 
-   //   net.phase[i-1]= netOldPhaseBase[i];
-      netPhaseBase[i-1]= netOldPhaseBase[i];
-  //**    net.naturalFrequency[i-1]= net.naturalFrequency[i];
-  //    netPhaseBase[i]= net.phase[i+1];// netOldPhaseBase[i] keep phase at    
-  //    netPhaseBase[i]= netPhaseBase[i+1];// netOldPhaseBase[i] keep phase at    
+      net.phase[i-1]= net.oldPhase[i];
+      netPhaseBase[i-1]= net.oldPhase[i];
+      net.naturalFrequency[i-1]= net.naturalFrequency[i];
+  //    net.phase[i]= net.phase[i+1];// net.oldPhase[i] keep phase at    
+  //    netPhaseBase[i]= netPhaseBase[i+1];// net.oldPhase[i] keep phase at    
   //    net.naturalFrequency[i]= net.naturalFrequency[i+1];
     }
 
-  //  net.phase[networkSize-1]=  net.oldPhase[0];
-    netPhaseBase[networkSize-1]=  netOldPhaseBase[0];
-  //**  net.naturalFrequency[networkSize-1]= OldFrequency[0];
+    net.phase[networkSize-1]=  net.oldPhase[0];
+    netPhaseBase[networkSize-1]=  net.oldPhase[0];
+    net.naturalFrequency[networkSize-1]= OldFrequency[0];
    
   }
 
@@ -343,17 +320,18 @@ void phasePattern() { // need standard mode to be trigged
     }
 
     for (int i = 1; i < (networkSize-1); i++) {
-      netPhaseBase[i+1]= netOldPhaseBase[i];// netOldPhaseBase[i] keep phase at 0
-     // net.naturalFrequency[i+1]= OldFrequency[i];
-      netPhaseBase[i]= netOldPhaseBase[i-1];// // useless
-    //  net.naturalFrequency[i]= OldFrequency[i-1]; // useless
+      net.phase[i+1]= net.oldPhase[i];// net.oldPhase[i] keep phase at 0
+      netPhaseBase[i+1]= net.oldPhase[i];// net.oldPhase[i] keep phase at 0
+      net.naturalFrequency[i+1]= OldFrequency[i];
+      netPhaseBase[i]= net.oldPhase[i-1];// // useless
+      net.naturalFrequency[i]= OldFrequency[i-1]; // useless
 
       
     }
     netPhaseBase[0]=  netOldPhaseBase[networkSize-1];
-  //  net.naturalFrequency[0]= OldFrequency[networkSize-1];
+    net.naturalFrequency[0]= OldFrequency[networkSize-1];
     netPhaseBase[networkSize-1]=  netOldPhaseBase[networkSize-1-1]; // useless
-  //  net.naturalFrequency[networkSize-1]= OldFrequency[networkSize-1-1];// // useless
+    net.naturalFrequency[networkSize-1]= OldFrequency[networkSize-1-1];// // useless
   } 
 
   if (key == 'U' && formerKeyMetro == '<') { 
@@ -397,7 +375,7 @@ void phasePattern() { // need standard mode to be trigged
     println ("J$  Shift frequencies -> one by one by keeping last position switched and divide /2");// based on i
     for (int i = 0; i < (networkSize-0); i++) {    
 
-      netPhaseBase[i]+= QUARTER_PI/(10);
+      net.phase[i]+= QUARTER_PI/(10);
       
     }
   }  
@@ -406,9 +384,9 @@ void phasePattern() { // need standard mode to be trigged
     println ("I$ Shift frequencies -> one by one by keeping last position switched and divide /2");// based on i
     for (int i = 0; i < (networkSize-0); i++) {    
 
-      //     netPhaseBase[i]-= QUARTER_PI/(10);
-          netPhaseBase[i]=netPhaseBase[i]-QUARTER_PI/4;
-       // netPhaseBase[i]=netPhaseBase[i]-QUARTERK_PI;
+      //     net.phase[i]-= QUARTER_PI/(10);
+          net.phase[i]=net.phase[i]-QUARTER_PI/4;
+       // net.phase[i]=net.phase[i]-QUARTERK_PI;
      // ActualVirtualPosition[i]+=0;  
 
       /*
@@ -433,8 +411,8 @@ void phasePattern() { // need standard mode to be trigged
   if (key == 'L') { 
     println ("L$  Shift frequencies -> one by one by keeping last position switched and divide /2");// based on i
     for (int i = 0; i < (networkSize-0); i++) {    
-      //   netPhaseBase[i]+= PI/(20+i);
-      //    netPhaseBase[i]+= PI/(i+1)/10; // good
+      //   net.phase[i]+= PI/(20+i);
+      //    net.phase[i]+= PI/(i+1)/10; // good
       //  automatiseWithNote();
       
     }
@@ -447,8 +425,8 @@ void phasePattern() { // need standard mode to be trigged
 
     // autoNote1();
     for (int i = 0; i < (networkSize-0); i++) { 
-      //   netPhaseBase[i]+= PI/(20+(networkSize-1-i));
-      //   netPhaseBase[i]+= PI/(networkSize-0-i)/10; // good
+      //   net.phase[i]+= PI/(20+(networkSize-1-i));
+      //   net.phase[i]+= PI/(networkSize-0-i)/10; // good
       //   automatiseWithNote();
     }
   }     
@@ -656,8 +634,8 @@ void phasePattern() { // need standard mode to be trigged
         if (key == 'a') { // a$
    print("a");  println ("Incremente Same offset of phases 12hit");    
    for (int i = 0; i < networkSize; i++) { 
-   netPhaseBase[i] += (TWO_PI/(networkSize/1))*(i+1); // TRES BIEN 
-   netPhaseBase[i]=  netPhaseBase[i]%TWO_PI; //
+   net.phase[i] += (TWO_PI/(networkSize/1))*(i+1); // TRES BIEN 
+   net.phase[i]=  net.phase[i]%TWO_PI; //
    
    }
    } 
@@ -668,10 +646,10 @@ void phasePattern() { // need standard mode to be trigged
   if (key == 'e') { 
     println ("Incremente positions  12/3 hit");  //e$
     for (int i = 0; i < networkSize; i++) {    
-      //    netPhaseBase[i] -= (QUARTER_PI/(networkSize-0))*(i+1); // TRES BIEN
+      //    net.phase[i] -= (QUARTER_PI/(networkSize-0))*(i+1); // TRES BIEN
 
-      netPhaseBase[i] = netPhaseBase[i] + ((TWO_PI/(networkSize/1))*(i+1)); // TRES BIEN  ==     netPhaseBase[i] += (i+1)*TWO_PI/4; //4hit  ==   netPhaseBase[i] +=  (i+1)*3.5*PI; 
-    //  netPhaseBase[i] = netPhaseBase[i] % TWO_PI; // TRES BIEN
+      net.phase[i] = net.phase[i] + ((TWO_PI/(networkSize/1))*(i+1)); // TRES BIEN  ==     net.phase[i] += (i+1)*TWO_PI/4; //4hit  ==   net.phase[i] +=  (i+1)*3.5*PI; 
+    //  net.phase[i] = net.phase[i] % TWO_PI; // TRES BIEN
 
       
       key ='#'; keyReleased();
@@ -690,12 +668,12 @@ void phasePattern() { // need standard mode to be trigged
       //  netOldPhaseBase[i] += (i+1)*4%TWO_PI; 
       //   netPhaseBase[i] +=  (i+1)*3*PI;  // one on two move an offset of PI
       
-     // netPhaseBase[i] += (i+1)*TWO_PI/3; //3hit  <=>   netPhaseBase[i] += (i+1)*TWO_PI/1.5; 
+     // net.phase[i] += (i+1)*TWO_PI/3; //3hit  <=>   net.phase[i] += (i+1)*TWO_PI/1.5; 
      
-        netPhaseBase[i] = netPhaseBase[i] + (i+1)*TWO_PI/3; //3hit  <=>   netPhaseBase[i] += (i+1)*TWO_PI/1.5; 
+        net.phase[i] = net.phase[i] + (i+1)*TWO_PI/3; //3hit  <=>   net.phase[i] += (i+1)*TWO_PI/1.5; 
      
 
-    //  netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+    //  net.phase[i]=  net.phase[i]%TWO_PI;
         key ='#';// keyReleased();
     }
   }
@@ -708,7 +686,7 @@ void phasePattern() { // need standard mode to be trigged
    for (int i = 0; i < networkSize; i++) {
    
    net.phase[networkSize-1-i] -= (i*TWO_PI/10)%PI/3;    //PAS TOUCHER 
-   netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+   net.phase[i]=  net.phase[i]%TWO_PI;
    }     
    }
    */
@@ -717,18 +695,18 @@ void phasePattern() { // need standard mode to be trigged
 
 
     for (int i = 0; i < networkSize; i++) {
-      //   netPhaseBase[i] += (i+1) *(TWO_PI/12); // 12 hit
+      //   net.phase[i] += (i+1) *(TWO_PI/12); // 12 hit
 
 
-      //    netPhaseBase[i] +=  -(i+2)%PI/6; // mieux
+      //    net.phase[i] +=  -(i+2)%PI/6; // mieux
     
-     // netPhaseBase[i] += (i*TWO_PI/5)%PI/(networkSize); // pas en mode circular ? 
-     netPhaseBase[i] += (i*TWO_PI/networkSize)%PI/(networkSize*3); // pas en mode circular ? 
-     //netPhaseBase[i] += (i*TWO_PI/10/5); //  en mode circular?
+     // net.phase[i] += (i*TWO_PI/5)%PI/(networkSize); // pas en mode circular ? 
+     net.phase[i] += (i*TWO_PI/networkSize)%PI/(networkSize*3); // pas en mode circular ? 
+     //net.phase[i] += (i*TWO_PI/10/5); //  en mode circular?
 
-      //    netPhaseBase[i] -=  +(i+1)%PI/6;
+      //    net.phase[i] -=  +(i+1)%PI/6;
 
-     // netPhaseBase[i]=  netPhaseBase[i]%(TWO_PI/1) ; // bien en pendulaire?
+     // net.phase[i]=  net.phase[i]%(TWO_PI/1) ; // bien en pendulaire?
  
       
     }
@@ -738,11 +716,11 @@ void phasePattern() { // need standard mode to be trigged
   if (key == 'R') {
     println ("Add PI/6 PENDULAR $ without move 11, 8, 5"); // R$
     for (int i = 0; i < networkSize; i++) {
-      //   netPhaseBase[i] += (i+1) *(TWO_PI/12); // 12 hit
+      //   net.phase[i] += (i+1) *(TWO_PI/12); // 12 hit
       
       //   net.phase[networkSize-1-i] += (i*TWO_PI/3)%PI/11;    //PAS TOUCHER
-   //   netPhaseBase[i] -= (i*TWO_PI/5)%PI/5;
-          netPhaseBase[i] -= (i*TWO_PI/networkSize)%PI/(networkSize*3); // pas en mode circular ? 
+   //   net.phase[i] -= (i*TWO_PI/5)%PI/5;
+          net.phase[i] -= (i*TWO_PI/networkSize)%PI/(networkSize*3); // pas en mode circular ? 
 
 
       //   net.phase[networkSize-1-i] += (i*TWO_PI/3)%PI/10;    //PAS TOUCHER
@@ -750,9 +728,9 @@ void phasePattern() { // need standard mode to be trigged
       //     net.phase[networkSize-1-i] += (i*TWO_PI/3)%TWO_PI/11;    //PAS TOUCHER
 
 
-      //   netPhaseBase[i] += (1*TWO_PI/(11-i+1))%PI/6;
-      //   netPhaseBase[i]  += ((PI/(networkSize/6))*(i+1))%PI/3; // OK
-      //   netPhaseBase[i]  +=  netPhaseBase[i] +(PI/((networkSize-i/12))*(i+1))%PI/12; // OK
+      //   net.phase[i] += (1*TWO_PI/(11-i+1))%PI/6;
+      //   net.phase[i]  += ((PI/(networkSize/6))*(i+1))%PI/3; // OK
+      //   net.phase[i]  +=  net.phase[i] +(PI/((networkSize-i/12))*(i+1))%PI/12; // OK
 
 
       netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
@@ -766,20 +744,20 @@ void phasePattern() { // need standard mode to be trigged
     println(" s$s: Reduce the gap between phases by f0 "); //S$
     for (int i = 0; i < networkSize-0; i++) {
 
-      //  netPhaseBase[i] -=(9-i)*0.05;
-      //   netPhaseBase[i] -=(networkSize-1-i)*0.05; // oscillator 11 do not move
-      netPhaseBase[i] -= (networkSize-1- oscillatorBlocked-i)*0.05; // if oscillatorBlocked=0; net.phase[5] doesn't move
-    //  netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+      //  net.phase[i] -=(9-i)*0.05;
+      //   net.phase[i] -=(networkSize-1-i)*0.05; // oscillator 11 do not move
+      net.phase[i] -= (networkSize-1- oscillatorBlocked-i)*0.05; // if oscillatorBlocked=0; net.phase[5] doesn't move
+    //  net.phase[i]=  net.phase[i]%TWO_PI;
 
       
     }
   } else if (key == 'S') { 
     println(" S$: Reduce the gap between phases by f0  ");    
     for (int i = 0; i < networkSize; i++) {      
-      //   netPhaseBase[i] -=(networkSize-1-i)*0.1;
-      //   netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
-         netPhaseBase[i] += (networkSize- oscillatorBlocked-i)*0.01;
-      //***    netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+      //   net.phase[i] -=(networkSize-1-i)*0.1;
+      //   net.phase[i]=  net.phase[i]%TWO_PI;
+         net.phase[i] += (networkSize- oscillatorBlocked-i)*0.01;
+      //***    net.phase[i]=  net.phase[i]%TWO_PI;
       
     }
   }
@@ -787,11 +765,11 @@ void phasePattern() { // need standard mode to be trigged
    else if (key == 'g') { 
     println(" Decrease the gap between phases of 5% from the oscillator " + oscillatorBlocked + " called with the same number as memoryi " + memoryi   );  
     for (int i = 0; i < networkSize; i++) {
-      //       netPhaseBase[i] -=i*0.01;
-      //         netPhaseBase[i] -=i*0.05;
+      //       net.phase[i] -=i*0.01;
+      //         net.phase[i] -=i*0.05;
 
-      netPhaseBase[i] -=      (oscillatorBlocked+i)*0.05;       //if oscillatorBlocked=0; net.phase[0] doesn't move
-      netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+      net.phase[i] -=      (oscillatorBlocked+i)*0.05;       //if oscillatorBlocked=0; net.phase[0] doesn't move
+      net.phase[i]=  net.phase[i]%TWO_PI;
       key='#';
       
     }
@@ -799,10 +777,10 @@ void phasePattern() { // need standard mode to be trigged
    else if (key == 'G') { 
     println(" G: Decrease the gap between phases by f9 ");  
     for (int i = 0; i < networkSize; i++) {
-      //       netPhaseBase[i] -=i*0.01;
-    //  netPhaseBase[i] -=i*0.1;
-       netPhaseBase[i] -= (networkSize- oscillatorBlocked-i)*0.01;
-    //  netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+      //       net.phase[i] -=i*0.01;
+    //  net.phase[i] -=i*0.1;
+       net.phase[i] -= (networkSize- oscillatorBlocked-i)*0.01;
+    //  net.phase[i]=  net.phase[i]%TWO_PI;
       
     }
   }
@@ -812,14 +790,14 @@ void phasePattern() { // need standard mode to be trigged
     println(" d$: INCREASE (clock way) the gap between phases of 5% from the oscillator " + oscillatorBlocked + " called with the same number as memoryi " + memoryi );
     for (int i = 0; i < networkSize; i++) {
 
-    //  netPhaseBase[i] +=(oscillatorBlocked-i)*0.05; // oscillator 10 do not nove
-        netPhaseBase[i] +=(i+1)*0.05;
+    //  net.phase[i] +=(oscillatorBlocked-i)*0.05; // oscillator 10 do not nove
+        net.phase[i] +=(i+1)*0.05;
 
-   //     netPhaseBase[i] -=(i+1)*0.05;
-    //        netPhaseBase[i] +=(5-i)*0.1; // oscillator 10 do not nove
-   //   netPhaseBase[i] +=(networkSize-oscillatorBlocked)*0.05;
-    //%%  netPhaseBase[i] = netPhaseBase[i]-(i)*0.05; //oscillatorBlocked;      //     netPhaseBase[i] += (oscillatorBlocked+i)*0.05; reciproque de f ne fonctionne pas
-   //   netPhaseBase[i] =  netPhaseBase[i]%TWO_PI;
+   //     net.phase[i] -=(i+1)*0.05;
+    //        net.phase[i] +=(5-i)*0.1; // oscillator 10 do not nove
+   //   net.phase[i] +=(networkSize-oscillatorBlocked)*0.05;
+    //%%  net.phase[i] = net.phase[i]-(i)*0.05; //oscillatorBlocked;      //     net.phase[i] += (oscillatorBlocked+i)*0.05; reciproque de f ne fonctionne pas
+   //   net.phase[i] =  net.phase[i]%TWO_PI;
       key='#';
       
     }
@@ -829,10 +807,10 @@ void phasePattern() { // need standard mode to be trigged
     println(" D$: Increase the gap between phases by f0  ");    
     for (int i = 0; i < networkSize; i++) {
 
-    //  netPhaseBase[i] +=(oscillatorBlocked-i)*0.1;
-    //   netPhaseBase[i] -=(i+1)*0.1;
-        netPhaseBase[i]+=   TWO_PI/networkSize/(networkSize)*(networkSize-1-i); // front  TWO_PI/8/(networkSize)*(i)   behind?
-   //   netPhaseBase[i] =  netPhaseBase[i]%TWO_PI;
+    //  net.phase[i] +=(oscillatorBlocked-i)*0.1;
+    //   net.phase[i] -=(i+1)*0.1;
+        net.phase[i]+=   TWO_PI/networkSize/(networkSize)*(networkSize-1-i); // front  TWO_PI/8/(networkSize)*(i)   behind?
+   //   net.phase[i] =  net.phase[i]%TWO_PI;
       
     }
   }
@@ -847,7 +825,7 @@ void phasePattern() { // need standard mode to be trigged
    
    abstractPhase[networkSize-2-i] += net.oldPhase[networkSize-1]+(i*TWO_PI/3)%PI/12;
    
-   netPhaseBase[i]=  abstractPhase[networkSize-2-i]%TWO_PI;
+   net.phase[i]=  abstractPhase[networkSize-2-i]%TWO_PI;
    
    //    
    
@@ -866,14 +844,14 @@ void phasePattern() { // need standard mode to be trigged
     println(" F: Increase the gap between phases by f9 ");    
     for (int i = 0; i < networkSize; i++) {
 
-      //  netPhaseBase[i] +=(i+1)*0.05;
-      //    netPhaseBase[i] +=(i+1)*0.005;
-      //  netPhaseBase[i] += (oscillatorBlocked+i)*0.05;  // l'oscillateur ne se bloque pas
-   //   netPhaseBase[i] -= (networkSize- oscillatorBlocked-i)*0.05;
+      //  net.phase[i] +=(i+1)*0.05;
+      //    net.phase[i] +=(i+1)*0.005;
+      //  net.phase[i] += (oscillatorBlocked+i)*0.05;  // l'oscillateur ne se bloque pas
+   //   net.phase[i] -= (networkSize- oscillatorBlocked-i)*0.05;
 
-       netPhaseBase[i] +=(i+1)*0.05;
+       net.phase[i] +=(i+1)*0.05;
 
-   //   netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+   //   net.phase[i]=  net.phase[i]%TWO_PI;
       key='#';
       
     }
@@ -883,12 +861,12 @@ void phasePattern() { // need standard mode to be trigged
     println(" F: Increase the gap between phases by f9 ");    
     for (int i = 0; i < networkSize; i++) {
 
-   //   netPhaseBase[i] +=(i+1)*0.1;
-    //  netPhaseBase[i] +=TWO_PI/8/(networkSize-1)*i; // 8 is the step, if 16 little step
-     netPhaseBase[i] +=TWO_PI/12/(networkSize-1)*i; // 8 is the step, if 16 little step  //BEHIND
-  //        netPhaseBase[i]+=   TWO_PI/(networkSize)/(networkSize+0)*(networkSize-1-i); // front 
+   //   net.phase[i] +=(i+1)*0.1;
+    //  net.phase[i] +=TWO_PI/8/(networkSize-1)*i; // 8 is the step, if 16 little step
+     net.phase[i] +=TWO_PI/12/(networkSize-1)*i; // 8 is the step, if 16 little step  //BEHIND
+  //        net.phase[i]+=   TWO_PI/(networkSize)/(networkSize+0)*(networkSize-1-i); // front 
 
-   //   netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+   //   net.phase[i]=  net.phase[i]%TWO_PI;
       key='#';
       
     }
@@ -899,13 +877,13 @@ void phasePattern() { // need standard mode to be trigged
 
     for (int i = 0; i < networkSize; i++) {
 
-    //  netPhaseBase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-1-i)); // TWOPI/10--> 10 hit and oscillator11 not affected thanks to -1 in second part of equation
-    //  netPhaseBase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-3-i)); // TWOPI/10--> 10 hit and oscillator9 not affected thanks to -3 in second part of equation 
-    //** netPhaseBase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-1-i)); // TWOPI/10--> 10 hit * 3%PI/3 with and oscillator11 not affected
+    //  net.phase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-1-i)); // TWOPI/10--> 10 hit and oscillator11 not affected thanks to -1 in second part of equation
+    //  net.phase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-3-i)); // TWOPI/10--> 10 hit and oscillator9 not affected thanks to -3 in second part of equation 
+    //** net.phase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-1-i)); // TWOPI/10--> 10 hit * 3%PI/3 with and oscillator11 not affected
 
-    // netPhaseBase[i]+=   (PI/(networkSize-2))*(1*(networkSize-1-i)); // TWOPI/10--> 10 hit * 3%PI/3 with and oscillator11 not affected
-     netPhaseBase[i]+=   TWO_PI/(networkSize+1)*(networkSize-1-i); // front 
-      //  netPhaseBase[i]+=   TWO_PI/(networkSize-2)*i; // behind
+    // net.phase[i]+=   (PI/(networkSize-2))*(1*(networkSize-1-i)); // TWOPI/10--> 10 hit * 3%PI/3 with and oscillator11 not affected
+     net.phase[i]+=   TWO_PI/(networkSize+1)*(networkSize-1-i); // front 
+      //  net.phase[i]+=   TWO_PI/(networkSize-2)*i; // behind
 
       //     net.phase[networkSize-1-i] += (i*TWO_PI/10)%PI/3;  // 10*3 hit//same effect as above 
 
@@ -920,12 +898,12 @@ void phasePattern() { // need standard mode to be trigged
     println("INCREASE phases with special modulo P$   "); //P$ 
     for (int i = 0; i < networkSize; i++) {
 
-      //     netPhaseBase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-1-i)); // TWOPI/10--> 10 hit and oscillator11 not affected thanks to -1 in second part of equation
-      //  netPhaseBase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-3-i)); // TWOPI/10--> 10 hit and oscillator9 not affected thanks to -3 in second part of equation 
-      netPhaseBase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-1-i))%PI/3; // TWOPI/10--> 10 hit * 3%PI/3 with and oscillator11 not affected
+      //     net.phase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-1-i)); // TWOPI/10--> 10 hit and oscillator11 not affected thanks to -1 in second part of equation
+      //  net.phase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-3-i)); // TWOPI/10--> 10 hit and oscillator9 not affected thanks to -3 in second part of equation 
+      net.phase[i]+=   (TWO_PI/(networkSize-2))*(1*(networkSize-1-i))%PI/3; // TWOPI/10--> 10 hit * 3%PI/3 with and oscillator11 not affected
 
       //     net.phase[networkSize-1-i] += (i*TWO_PI/10)%PI/3;  // 10*3 hit//same effect as above 
-    //  netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+    //  net.phase[i]=  net.phase[i]%TWO_PI;
       key='#';
       
     }
@@ -935,11 +913,11 @@ void phasePattern() { // need standard mode to be trigged
    else if (key == 'M') { 
     println("INCREASE phases with 0.5   "); //
     for (int i = 0; i < networkSize; i++) {
-      //       netPhaseBase[i] += QUARTER_PI/2 * net.phase[1*(networkSize-1-i)] ;//
-      netPhaseBase[i] =netPhaseBase[i] +  QUARTER_PI/2;//
+      //       net.phase[i] += QUARTER_PI/2 * net.phase[1*(networkSize-1-i)] ;//
+      net.phase[i] =net.phase[i] +  QUARTER_PI/2;//
 
-      //      netPhaseBase[i] = netPhaseBase[i] - QUARTER_PI  i;
-   //   netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+      //      net.phase[i] = net.phase[i] - QUARTER_PI  i;
+   //   net.phase[i]=  net.phase[i]%TWO_PI;
       key='#';
       
     }
@@ -947,8 +925,8 @@ void phasePattern() { // need standard mode to be trigged
     println("DECREASE  phases with special modulo    "); // UTILISE SI ELLES ONT deja un ecart equidistant
     for (int i = 0; i < networkSize; i++) {  
 
-      netPhaseBase[i]-= ((TWO_PI/(networkSize-2))*(1*(networkSize-1-i)))%PI/6; // 
-    //  netPhaseBase[i]=  netPhaseBase[i]%TWO_PI;
+      net.phase[i]-= ((TWO_PI/(networkSize-2))*(1*(networkSize-1-i)))%PI/6; // 
+    //  net.phase[i]=  net.phase[i]%TWO_PI;
       key='#';
       
     }
@@ -958,7 +936,7 @@ void phasePattern() { // need standard mode to be trigged
       //   netPhaseBase[i] -= PI/32 * netOldPhaseBase[i] ;//
       //   netPhaseBase[i] -= PI/8 * netPhaseBase[i] ;//OK
       
-          netPhaseBase[i] =netPhaseBase[i]- QUARTER_PI/8;
+          net.phase[i] =net.phase[i]- QUARTER_PI/8;
 
       
       key='#';
@@ -972,8 +950,8 @@ void phasePattern() { // need standard mode to be trigged
 
     println(" Align oscillator vertically to the top  ");
     for (int i = 0; i < networkSize; i++) {
-      netPhaseBase[i]= 0-PI/2; 
-      //      netPhaseBase[i]= 0; 
+      net.phase[i]= 0-PI/2; 
+      //      net.phase[i]= 0; 
       
     }
   } 
@@ -983,8 +961,8 @@ void phasePattern() { // need standard mode to be trigged
 
     float [] realign = new float [networkSize];
       for (int i = 0; i < networkSize; i++) {
-       realign[i] = netPhaseBase[i]%TWO_PI;
-       netPhaseBase[i]=  netPhaseBase[i] - realign[i];   
+       realign[i] = net.phase[i]%TWO_PI;
+       net.phase[i]=  net.phase[i] - realign[i];   
       }
     }
 
@@ -994,9 +972,9 @@ void phasePattern() { // need standard mode to be trigged
 
     float [] realign = new float [networkSize];
       for (int i = 0; i < networkSize; i++) {
-       realign[i] = netPhaseBase[i]%TWO_PI+PI/2;
-       netPhaseBase[i]=  netPhaseBase[i] - realign[i];
-      //  netPhaseBase[i]= 0+PI/2  ; // position 0+PI/2  
+       realign[i] = net.phase[i]%TWO_PI+PI/2;
+       net.phase[i]=  net.phase[i] - realign[i];
+      //  net.phase[i]= 0+PI/2  ; // position 0+PI/2  
         
       }
     }
