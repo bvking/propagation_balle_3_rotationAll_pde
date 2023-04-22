@@ -58,10 +58,12 @@ println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
 
       for (int i = 0; i < networkSize-0; i+=1) { 
         
-       newPosFollowed[i]=signal[2]; // signals to follow
+       newPosFollowed[i]=map (signal[2], 0, 1, 0, TWO_PI); // signals to follow
        newPosFollowed[i]=newPosFollowed[i]%TWO_PI;  // signals to follow
 
        phaseMapped[i] = newPosFollowed[i]+phaseMappedFollow[i]; // new signal is a composition 
+
+      
    
     if (phaseMapped[i]<0){
    
@@ -75,6 +77,9 @@ println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
     DataToDueCircularVirtualPosition[i]= (int) map (phaseMapped[i], 0, TWO_PI, 0, numberOfStep); 
     phaseMapped[i]= map (DataToDueCircularVirtualPosition[i], 0, numberOfStep, 0, TWO_PI);
     }
+
+     newPosXaddSignal[i]=newPosFollowed[i];
+
   }
   
  }
@@ -84,7 +89,8 @@ println ( " modeStartKeyToFollow " + modeStartKeyToFollow);
      phasePattern();
      
     for (int i = 0; i < networkSize-0; i+=1) { 
-    phaseMappedFollow[i]= net.phase[i];// add offset given by pendularPattern   
+   // phaseMappedFollow[i]= net.phase[i];// add offset given by pendularPattern   
+    phaseMappedFollow[i] = netPhaseBase[i];
     phaseMappedFollow[i]= phaseMappedFollow[i]%TWO_PI;  
     }
    }
