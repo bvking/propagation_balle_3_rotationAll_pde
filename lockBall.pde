@@ -51,11 +51,7 @@
        dataMappedForMotor[j]= (int) map (phaseKeptAtChange[i], 0, TWO_PI, 0, numberOfStep);
 
        netPhaseBase[j]= map (dataMappedForMotor[j], 0, numberOfStep, 0, TWO_PI);
-   
-     
-   
-
- 
+  
    }
     
     phaseMappedFollow[j]=netPhaseBase[j];    //  RECORD on oscillatorChange-1 the postion of oscillatorChange where it has just changed

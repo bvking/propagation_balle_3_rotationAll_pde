@@ -241,11 +241,7 @@ public void settings() {
        dataMappedForMotor[j]= (int) map (phaseKeptAtChange[i], 0, TWO_PI, 0, numberOfStep);
 
        netPhaseBase[j]= map (dataMappedForMotor[j], 0, numberOfStep, 0, TWO_PI);
-   
-     
-   
-
- 
+  
    }
     
     phaseMappedFollow[j]=netPhaseBase[j];    //  RECORD on oscillatorChange-1 the postion of oscillatorChange where it has just changed
@@ -2480,7 +2476,7 @@ modeStartKeyToFollow = " followSignalSampledOppositeWay(frameRatio) ";
       for (int i = 0; i < networkSize-0; i+=1) { 
         
        newPosFollowed[i]=map (signal[2], 0, 1, 0, TWO_PI); // signals to follow
-       newPosFollowed[i]=newPosFollowed[i]%TWO_PI;  // signals to follow
+   //    newPosFollowed[i]=newPosFollowed[i]%TWO_PI;  // signals to follow
 
        phaseMapped[i] = newPosFollowed[i]+phaseMappedFollow[i]; // new signal is a composition 
 
@@ -2514,7 +2510,7 @@ modeStartKeyToFollow = " followSignalSampledOppositeWay(frameRatio) ";
     for (int i = 0; i < networkSize-0; i+=1) { 
    // phaseMappedFollow[i]= net.phase[i];// add offset given by pendularPattern   
     phaseMappedFollow[i] = netPhaseBase[i];
-    phaseMappedFollow[i]= phaseMappedFollow[i]%TWO_PI;  
+   // phaseMappedFollow[i]= phaseMappedFollow[i]%TWO_PI;  
     }
    }
 
@@ -2522,7 +2518,7 @@ modeStartKeyToFollow = " followSignalSampledOppositeWay(frameRatio) ";
 
    //******** Lock last oscillator to the lastPhase
   
- lockOscillatorToPositionFromPreviousProagedBall();
+// lockOscillatorToPositionFromPreviousProagedBall();
 
  
 
@@ -2541,7 +2537,7 @@ modeStartKeyToFollow = " followSignalSampledOppositeWay(frameRatio) ";
    if (doB!=true){ 
 
        LFO[oscillatorChange] =LFO[oldOscillatorChange]+QUARTER_PI*1/2 ;  // on ajoute 
-        LFO[oscillatorChange] =  LFO[oscillatorChange] %TWO_PI;
+    //    LFO[oscillatorChange] =  LFO[oscillatorChange] %TWO_PI;
        dataMappedForMotor[oscillatorChange]= (int) map (LFO[oscillatorChange], 0, TWO_PI , 0, numberOfStep);  // 
        println (" true phaseKeptAtChange[oscillatorChange] ", oscillatorChange, " " ,  phaseKeptAtChange[oldOscillatorChange]);
  
@@ -2579,7 +2575,8 @@ modeStartKeyToFollow = " followSignalSampledOppositeWay(frameRatio) ";
 
  for (int k = 0; k < this.nbBalls; k++) 
     {    
-        drawBallGeneral(k, newPosXaddSignal[k] );   
+        drawBallGeneral(k, newPosXaddSignal[k] );  
+        print (" newPosXaddSignal[k] " + newPosXaddSignal[k]); 
     } 
   }
 
@@ -2652,7 +2649,7 @@ modeStartKeyToFollow = " followSignalSampledOppositeWay(frameRatio) ";
   public void  splitTimeScale(float propagationSpeed) { 
    
 
-         signal[2] = (0*PI + (frameCount / propagationSpeed) * cos (1000 / 500.0f)*-1)%1;
+         signal[2] = (0*PI + (frameCount / propagationSpeed) * cos (1000 / 500.0f)*-1); //%1
          
       //   (if signal is sinusoidale we will see good propagation)
       
