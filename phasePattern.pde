@@ -20,7 +20,7 @@ int oldMemoryi, memoryi;
 int k,d;
 char formerSartKey,formerKeyMetro;
 
-void phasePattern() { // need standard mode to be trigged
+void phasePatternBase() { // need standard mode to be trigged
   //************************************ DONT TOUCH
     for (int i = 0; i < (networkSize); i++) { 
       netOldPhaseBase[i]=netPhaseBase[i];
@@ -1042,13 +1042,13 @@ void phasePattern() { // need standard mode to be trigged
     if ( keyMode != " phasePattern "){
   // for (int i = 0; i < networkSize; i++) {
    //  net.naturalFrequency[i]=signal[2]; 
-     signal[2]= - signal[2]; 
+    // signal[2]= - signal[2]; 
    //  } 
      }  
     println("  Changes way of rotation  "); 
     for (int i = 0; i < networkSize; i++) {
       background(120, 20, 20);
-      net.naturalFrequency[i] = -1* net.naturalFrequency[i];
+   //   net.naturalFrequency[i] = -1* net.naturalFrequency[i];
 
       // interFrequency[memoryi] = -1* net.naturalFrequency[i];
       

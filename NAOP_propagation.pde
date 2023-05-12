@@ -108,7 +108,8 @@ void draw()
   background(0);
   translate(width/2, -height/2, -1000);// To set the center of the perspective
  
-  propagationMode();
+ // propagationMode();
+  propagationBallRotationBis();
 //  CI DESSOUS 
 //  rotate(-HALF_PI ); //TO change the beginning of the 0 (cercle trigo) and the cohesion point to - HALF_PI   
 //  float lastBallPosition =  map (position.x, 0, 300, 0, TWO_PI); //  assigne à les positions x (celles qui viennent du sample non integré ici ) à la variable lastBallPosition. La balle la plus en avant de la machine
