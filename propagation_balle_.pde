@@ -19,6 +19,8 @@ modeStartKeyToFollow = " null ";
 
 
      textSize (50);
+          text ("Undo followed Propagation with L " + key, -width-200, -height- 700 );
+
      text (" oldOscillatorChange " + oldOscillatorChange + " oscillatorChange " + oscillatorChange + " j " + nf (phaseKeptAtChange[oscillatorChange], 0, 2), -width, -height- 900+300 );
      text (" propagationTrigged " + propagationTrigged + " propagationSpeed " + propagationSpeed + " key " + key, -width, -height- 800+300  );
      text (" signal2  " +nf(signal[2], 0, 2) + " QpropWay " + doQ + " doZ " + doZ + " BlargerPhase " + doB , -width, -height- 700+300 );
@@ -46,7 +48,7 @@ modeStartKeyToFollow = " null ";
  
     
     case 'l': // enable propagation or lock
-      dol=!dol;
+      dol=true;
     key = '#';
 
     break;
@@ -105,9 +107,9 @@ modeStartKeyToFollow = " null ";
            }
   
 
-      for (int i = 0; i < networkSize-0; i+=1) {             
-       newPosFollowed[i]=map (signal[2], 0, 1, 0, TWO_PI); // signals to follow
-   //    newPosFollowed[i]=newPosFollowed[i]%TWO_PI;  // signals to follow
+      for (int i = 0; i < networkSize-0; i+=1) { 
+         newPosFollowed[i]=map (0.08, 0, 1, 0, TWO_PI); // signals to follow  
+        //   newPosFollowed[i]=map (signal[2], 0, 1, 0, TWO_PI); // signals to follow
        phaseMapped[i] = newPosFollowed[i]+phaseMappedFollow[i]; // new signal is a composition 
 
       if (phaseMapped[i]<0){
@@ -127,7 +129,7 @@ modeStartKeyToFollow = " null ";
   }
   
  }
-    //lockOscillatorToPositionFromPreviousProagedBall();
+   // lockOscillatorToPositionFromPreviousProagedBall();
       //******** Lock last oscillator to the lastPhase
 
       if (  propagationTrigged==true && dol==true) {
@@ -140,7 +142,7 @@ modeStartKeyToFollow = " null ";
     
  
  
-      if (key != '#' ) {
+   //   if (key != '#' ) {
       if (modeStartKeyToFollow == " null ") {
    //  phasePatternOriginal();
       phasePatternBase();
@@ -151,7 +153,7 @@ modeStartKeyToFollow = " null ";
     //  phaseMappedFollow[i] = phaseMappedFollow[i]%TWO_PI; 
        }
       }
-     }
+   //  }
 
 
    propagationSpeed=50;
@@ -383,7 +385,7 @@ void  splitTimeLfoScale() {  // change de sens de propagagtion.   ATTENTION dans
  void  splitTimeScaleRotation(float propagationSpeed) { 
    
 
-         signal[2] = (0*PI + (frameCount / propagationSpeed) * cos (1000 / 500.0)*-1); //%1
+         signal[2] = (0*PI + (frameCount / propagationSpeed) * cos (1000 / 500.0)*1); //%1
 
        if (doo=true) signal[2]=-signal[2]; 
       //   (if signal is sinusoidale we will see good propagation)
